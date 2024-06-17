@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        .welcome-container {
+            color: #007bff;
+            font-size: 36px;
+            z-index: 1;
+        }
+
+        .button-container {
+            margin-top: 30px;
+            z-index: 2;
+        }
+
+        .button-container a {
+            margin: 0 10px;
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button-container a:hover {
+            background-color: #0056b3;
+            animation: shake 1.0s;
+        }
+
+        .button-container a.clicked {
+            background-color: #28a745;
+            animation: none;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body onload="document.body.classList.add('loaded')">
+    <div class="welcome-container">
+        <h1>Welcome to FlightFinds!</h1>
+    </div>
+    <div class="button-container">
+        <a href="/signup" id="signupButton" onclick="handleButtonClick(event)">Sign Up</a>
+        <a href="/login" id="loginButton" onclick="handleButtonClick(event)">Login</a>
+    </div>
+
+    <script>
+        function handleButtonClick(event) {
+            event.preventDefault();
+            const clickedButton = event.target;
+            clickedButton.classList.add('clicked');
+
+            setTimeout(() => {
+                window.location.href = clickedButton.getAttribute('href');
+            }, 500);
+        }
+    </script>
+</body>
+</html>

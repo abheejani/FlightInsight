@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Options</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            position: relative;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .delay-select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .submit-button,
+        .dashboard-link,
+        .taskbar button,
+        .submit-button-small {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 10px 0;
+        }
+
+        .submit-button-small {
+            padding: 8px 16px;
+        }
+
+        .submit-button:hover,
+        .dashboard-link:hover,
+        .taskbar button:hover,
+        .submit-button-small:hover {
+            background-color: #0056b3;
+        }
+
+        .submit-button {
+            font-size: 36px;
+            cursor: pointer;
+            color: #ffffff;
+            margin-top: 20px;
+        }
+
+        .dashboard-link {
+            font-size: 18px;
+        }
+
+        .dashboard-link:hover {
+            text-decoration: underline;
+        }
+
+        .taskbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+            font-size: 18px;
+        }
+
+        .taskbar button {
+            color: white;
+            background-color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+
+        .taskbar button:hover {
+            background-color: #555;
+        }
+
+        .taskbar .logout-btn {
+            color: white;
+            background-color: #d9534f;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 3;
+            text-align: center;
+        }
+
+        .popup p {
+            margin-bottom: 20px;
+        }
+
+        .popup button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .popup button:hover {
+            background-color: #555;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        h1 {
+            margin-top: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/dashboard" class="dashboard-link">Go to Dashboard</a>
+
+    <div class="taskbar">
+        <button class="dashboard-btn" onclick="location.href='/dashboard'">Dashboard</button>
+        <button class="my-flights-btn" onclick="location.href='/my_flights'">View Itinerary</button>
+        <button class="recommend-btn" onclick="location.href='/choose_recommend'">Recommend me a day!</button>
+        <button class="book-flights-btn" onclick="location.href='/book_flight'">Book Flights</button>
+        <button class="logout-btn" onclick="confirmLogout()">Logout</button>
+    </div>
+
+    <div id="logoutPopup" class="popup">
+        <p>Are you sure you want to log out?</p>
+        <button onclick="logout()">Yes</button>
+        <button onclick="cancelLogout()">No</button>
+    </div>
+
+    <h1>My Flights</h1>
+    <form id="updateForm" action="{{ url_for('my_flights') }}" method="post">
+        <table>
+            <tr>
+                <th>Flight Number</th>
+                <th>Origin Airport</th>
+                <th>Destination Airport</th>
+                <th>Time</th>
+                <th>Airline</th>
+                <th>Month</th>
+                <th>Day</th>
+                <th>Delay Time</th>
+                <th>Delay Type</th>
+            </tr>
+            {% for flight in flights %}
+            <tr style="background-color:  
+                {% if flight[8] == 'Large Delay' %}
+                  red;
+                {% elif flight[8] == 'Medium Delay' %}
+                  yellow;
+                {% elif flight[8] == 'Small Delay' %}
+                  green;
+                {% else %}
+                  white;
+                {% endif %}">
+                <td>{{ flight[0] }}</td>
+                <td>{{ flight[1] }}</td>
+                <td>{{ flight[2] }}</td>
+                <td>{{ flight[3] }}</td>
+                <td>{{ flight[4] }}</td>
+                <td>{{ flight[5] }}</td>
+                <td>{{ flight[6] }}</td>
+                <td>
+                    <input type="text" class="delay-select" name="delay_time_{{ flight[0] }}" value="{{ flight[7] }}">
+                </td>
+                <td>{{ flight[8] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="javascript:void(0);" onclick="document.getElementById('updateButton').click();" class="submit-button submit-button-small">Update Delays</a>
+        <button type="submit" style="display: none;" id="updateButton">Update</button>
+    </form>
+
+    <a href="/remove_flight" class="submit-button submit-button-small">Remove a Flight</a>
+
+    <script>
+        function confirmLogout() {
+            document.getElementById('logoutPopup').style.display = 'block';
+        }
+
+        function logout() {
+            window.location.href = '/';
+        }
+
+        function cancelLogout() {
+            const logoutPopup = document.getElementById('logoutPopup');
+            logoutPopup.style.animation = 'fadeOut 0.5s';
+            setTimeout(() => {
+                logoutPopup.style.display = 'none';
+                logoutPopup.style.animation = '';
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>

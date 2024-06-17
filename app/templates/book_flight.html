@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Flight</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            position: relative;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        form input {
+            margin-bottom: 10px;
+        }
+
+        .taskbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+            font-size: 18px;
+        }
+
+        .taskbar button {
+            color: white;
+            background-color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+
+        .taskbar button:hover {
+            background-color: #555;
+        }
+
+        .taskbar .logout-btn {
+            color: white;
+            background-color: #d9534f;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .taskbar .book-flights-btn {
+            color: white;
+            background-color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .taskbar .book-flights-btn:hover {
+            background-color: #555;
+        }
+
+        .taskbar .recommend-btn {
+            color: white;
+            background-color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .taskbar .recommend-btn:hover {
+            background-color: #555;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 3;
+            text-align: center;
+        }
+
+        .popup p {
+            margin-bottom: 20px;
+        }
+
+        .popup button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .popup button:hover {
+            background-color: #555;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="taskbar">
+        <button class="dashboard-btn" onclick="location.href='/dashboard'">Dashboard</button>
+        <button class="my-flights-btn" onclick="location.href='/my_flights'">View Itinerary</button>
+        <button class="recommend-btn" onclick="location.href='/choose_recommend'">Recommend me a day!</button>
+        <button class="book-flights-btn" onclick="location.href='/book_flight'">Book Flights</button>
+        <button class="logout-btn" onclick="confirmLogout()">Logout</button>
+    </div>
+
+    <div id="logoutPopup" class="popup">
+        <p>Are you sure you want to log out?</p>
+        <button onclick="logout()">Yes</button>
+        <button onclick="cancelLogout()">No</button>
+    </div>
+
+    <form method="post">
+        Initial Airport: <input type="text" name="initial_airport">
+        Final Airport: <input type="text" name="final_airport">
+        Airline: <input type="text" name="airline">
+        Month: <input type="text" name="month">
+        Day: <input type="text" name="day">
+
+        <button type="submit">Book Flight</button>
+    </form>
+
+    <script>
+        function confirmLogout() {
+            document.getElementById('logoutPopup').style.display = 'block';
+        }
+
+        function logout() {
+            window.location.href = '/';
+        }
+
+        function cancelLogout() {
+            const logoutPopup = document.getElementById('logoutPopup');
+            logoutPopup.style.animation = 'fadeOut 0.5s';
+            setTimeout(() => {
+                logoutPopup.style.display = 'none';
+                logoutPopup.style.animation = '';
+            }, 500);
+        }
+
+        function recommendDay() {
+            window.location.href = '/mostcommon';
+        }
+    </script>
+</body>
+</html>
